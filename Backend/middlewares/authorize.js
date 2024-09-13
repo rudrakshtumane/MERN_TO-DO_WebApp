@@ -1,25 +1,25 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-exports.auth = (req, res, next) => {
-    let token = req.header('Authorization');
-    console.log(token);
-    if (!token) {
-        return res.status(401).json({ msg: 'No token, authorization denied' });
-    }
-    try {
-        token = token.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded.user;
-        console.log("******",decoded.user);
-        next();
-    } catch (err) {
-        res.status(401).json({ msg: 'Token is not valid' });
-    }
-};
+const authorize = (req, res, next) => {
+  const authHeader = req.header("Authorization");
 
-exports.admin = (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({ msg: 'Access denied, admin only' });
-    }
+  if (!authHeader) {
+    return res.status(403).send({ message: "No token provided" });
+  }
+
+  const [bearerWord, bearerToken] = authHeader.split(" ");
+
+  if (bearerWord !== "Bearer" || !bearerToken) {
+    return res.status(403).send({ message: "Invalid header format" });
+  }
+
+  try {
+    const decoded = jwt.verify(bearerToken, "key");
+    req.user = decoded;
     next();
+  } catch (error) {
+    res.status(401).send({ message: "Token is Invalid" });
+  }
 };
+
+module.exports = authorize;
