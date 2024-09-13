@@ -8,12 +8,12 @@ dotenv.config();
 
   async function registerUser (req, res){
    
-  const { username, email, password, mobileNumber } = req.body;
+  const {firstName,lastName, username, email, password, confirmPassword } = req.body;
   try {
     const existUser = await User.findOne({ email });
    
     if (!existUser) {
-      const user = new User({ username, email, password, mobileNumber });
+      const user = new User({firstName,lastName, username, email, password, confirmPassword });
       await user.save();
     
       return res.status(201).send({ message: "User registered successfully" });
