@@ -6,7 +6,7 @@ const upload = require("../middlewares/multer");
 
 router.post("/createTask", auth,  taskController.createTask);
 
-router.get("/getUserTasks", auth, taskController.getUserTasks);
+router.get("/getUserTasks/:id", auth, taskController.getUserTasks);
 
 router.put("/updateTask/:id", auth, taskController.updateTask);
 

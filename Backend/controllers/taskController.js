@@ -23,12 +23,26 @@ const createTask = async (req, res) => {
 
 const getUserTasks = async (req, res) => {
   try {
+    // Ensure req.user exists
+    if (!req.user || !req.user.id) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    // Fetch tasks based on the logged-in user's ID
     const tasks = await Task.find({ createdBy: req.user.id });
+
+    // Check if tasks are found
+    if (!tasks || tasks.length === 0) {
+      return res.status(404).send({ message: "No tasks found for the user" });
+    }
+
     return res.status(200).send(tasks);
   } catch (error) {
+    // Return server error if something goes wrong
     return res.status(500).send({ message: error.message });
   }
 };
+
 
 
 const updateTask = async (req, res) => {
