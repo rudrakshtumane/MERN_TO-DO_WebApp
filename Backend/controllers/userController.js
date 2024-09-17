@@ -29,8 +29,8 @@ dotenv.config();
   async function loginUser (req, res)  {
 
     try {
-      const { email, password } = req.body;
-      const user = await User.findOne({ email });
+      const { username, password } = req.body;
+      const user = await User.findOne({ username });
       if (!user || !(await user.comparePassword(password))) {
         return res.status(400).send({ error: 'Invalid login credentials' });
       }
